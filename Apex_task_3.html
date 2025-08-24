@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nisarg - Web Developer Portfolio</title>
+  <style>
+    :root {
+      --primary: #1565c0;
+      --primary-light: #42a5f5;
+      --primary-dark: #0d47a1;
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --border: #e3e8ee;
+      --text: #222b45;
+      --text-light: #5a6a85;
+      --error: #e53e3e;
+      --shadow: 0 2px 8px rgba(21,101,192,0.08);
+    }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      height: 64px;
+    }
+    nav a {
+      color: var(--primary-dark);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+    }
+    nav a:hover, nav a.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .page-container {
+      max-width: 700px;
+      margin: 80px auto 0 auto;
+      background: var(--panel);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 32px 24px 24px 24px;
+    }
+    h1 {
+      color: var(--primary);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    h2 {
+      color: var(--primary-dark);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+    p {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      margin: 10px 0 18px 0;
+      max-width: 600px;
+    }
+    img {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 8px;
+      margin: 16px 0;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      background: #fff;
+      display: block;
+    }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: var(--primary-light);
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 22px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: var(--primary-dark);
+    }
+    /* Contact Panel Overlay */
+    .contact-panel-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(21,101,192,0.10);
+      z-index: 1001;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    .contact-panel-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    #contact {
+      position: fixed;
+      top: 0; right: 0;
+      height: 100%;
+      width: 90%;
+      max-width: 340px;
+      background: var(--panel);
+      z-index: 1002;
+      box-shadow: -5px 0 15px rgba(21,101,192,0.10);
+      transform: translateX(100%);
+      transition: transform 0.3s;
+      overflow-y: auto;
+      padding: 24px 16px 16px 16px;
+      padding-top: 64px;
+      border-left: 1px solid var(--border);
+    }
+    #contact.is-open {
+      transform: translateX(0);
+    }
+    .close-panel-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 1.7rem;
+      color: var(--primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+    form {
+      max-width: 300px;
+      margin: 0 auto;
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+      text-align: left;
+      border: none;
+      padding: 0;
+    }
+    .form-group label {
+      color: var(--primary-dark);
+      font-weight: 500;
+      margin-bottom: 2px;
+      display: block;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 9px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      box-sizing: border-box;
+      margin-bottom: 4px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 8px rgba(21,101,192,0.13);
+    }
+    input.invalid,
+    textarea.invalid {
+      border-color: var(--error);
+    }
+    .error-message {
+      color: var(--error);
+      font-size: 0.95rem;
+      margin-top: 2px;
+      min-height: 1em;
+    }
+    .form-success-message {
+      color: var(--primary-light);
+      background: var(--bg);
+      border: 1px solid var(--primary);
+      padding: 7px;
+      border-radius: 6px;
+      text-align: center;
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    /* Gallery */
+    .gallery {
+      margin-top: 24px;
+      text-align: center;
+      background: var(--bg);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 14px 0;
+    }
+    .gallery h2 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin-bottom: 14px;
+      border: none;
+      padding: 0;
+    }
+    .main-image-display {
+      width: 100%;
+      max-width: 480px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      margin-bottom: 10px;
+      object-fit: cover;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .thumbnail-container {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .thumbnail {
+      width: 60px;
+      height: 40px;
+      border-radius: 5px;
+      cursor: pointer;
+      object-fit: cover;
+      border: 2px solid transparent;
+      transition: transform 0.2s, border-color 0.2s;
+      background: var(--bg);
+      box-shadow: var(--shadow);
+    }
+    .thumbnail:hover {
+      transform: scale(1.05);
+      border-color: var(--primary-light);
+    }
+    .thumbnail.active {
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+    /* To-Do List */
+    .todo-section {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 14px;
+      background: var(--bg);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .todo-section h2 {
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+      margin-top: 0;
+      margin-bottom: 14px;
+      border: none;
+      padding: 0;
+    }
+    #todo-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    #todo-input {
+      flex-grow: 1;
+      padding: 9px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    #todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      text-align: left;
+    }
+    #todo-list li {
+      background: var(--panel);
+      padding: 9px;
+      border-radius: 5px;
+      margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid var(--border);
+    }
+    #todo-list li.completed {
+      text-decoration: line-through;
+      color: #90caf9;
+      background: #e3f2fd;
+    }
+    .delete-btn {
+      color: var(--error);
+      font-size: 1rem;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    /* API Section */
+    .api-section {
+      background: var(--bg);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 18px auto;
+      max-width: 480px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    #joke-result {
+      color: var(--text);
+      font-size: 1rem;
+      background: var(--panel);
+      border-radius: 6px;
+      padding: 8px;
+      margin-top: 8px;
+      min-height: 32px;
+    }
+    .footer-actions {
+      margin-top: 18px;
+      background: var(--panel);
+      padding: 10px 0;
+      border-radius: 0 0 12px 12px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 700px) {
+      .page-container {
+        width: 99%;
+        padding: 8px 0;
+      }
+      img, .main-image-display {
+        max-width: 100%;
+        width: 100%;
+        margin: 8px 0;
+      }
+      .thumbnail-container {
+        gap: 5px;
+      }
+      .thumbnail {
+        width: 40px;
+        height: 28px;
+      }
+      .todo-section, form, .api-section {
+        padding: 6px;
+      }
+      #contact {
+        width: 100%;
+        max-width: none;
+        padding: 8px;
+        padding-top: 54px;
+      }
+      nav ul {
+        flex-direction: column;
+        height: auto;
+        padding: 8px 0;
+        gap: 6px;
+      }
+      .footer-actions {
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#tasks">Tasks</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="contact-panel-overlay" id="contact-overlay"></div>
+  <div class="page-container">
+    <main>
+      <div id="home" class="intro-content">
+        <h1>Nisarg 🌿</h1>
+        <p>During my internship at Apex Planet, I built a strong foundation in web development. I began with HTML to structure web content, moved to CSS for styling and layout, and then integrated JavaScript to create interactive user experiences. This hands-on project was instrumental in developing my practical front-end coding skills.</p>
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Scenic view of a beach with waves and a clear sky" />
+        <p>Explore my professional network on <a href="https://www.linkedin.com/in/harsh-sonpuria-072a3032b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">LinkedIn</a>.</p>
+      </div>
+      <!-- To-Do List Section -->
+      <section id="tasks" class="todo-section">
+        <h2>Interactive Demo</h2>
+        <form id="todo-form">
+          <input type="text" id="todo-input" placeholder="Add a new task..." autocomplete="off">
+          <button type="submit">Add Task</button>
+        </form>
+        <ul id="todo-list"></ul>
+      </section>
+    </main>
+    <!-- Image Gallery Section -->
+    <section id="gallery" class="gallery">
+      <h2>Project Gallery</h2>
+      <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Team collaborating around a desk with laptops and notes" class="main-image-display" id="mainImage">
+      <div class="thumbnail-container">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Team collaborating around a desk" class="thumbnail active">
+        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1332&q=80" alt="Two professionals discussing work over a laptop" class="thumbnail">
+        <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1331&q=80" alt="Close-up of code on a laptop screen" class="thumbnail">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80" alt="Modern workspace with multiple monitors showing code" class="thumbnail">
+        <img src="https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80" alt="Person working on a laptop at a cafe table" class="thumbnail">
+      </div>
+    </section>
+    <section class="api-section" id="joke-api-section">
+      <h2>Random Joke (API Demo)</h2>
+      <button id="fetch-joke-btn">Get a Joke</button>
+      <div id="joke-result" style="margin-top:8px;"></div>
+    </section>
+    <footer>
+      <div class="footer-actions">
+        <button id="connect-button">Welcome Message</button>
+      </div>
+    </footer>
+  </div>
+  <!-- Contact Form Section (slide-out panel) -->
+  <section id="contact">
+    <button class="close-panel-btn" id="close-contact-panel">&times;</button>
+    <form id="contact-form" action="#" method="post">
+      <h2>Contact Me</h2>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <p class="error-message" id="name-error" aria-live="polite"></p>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+        <p class="error-message" id="email-error" aria-live="polite"></p>
+      </div>
+      <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="5"></textarea>
+        <p class="error-message" id="message-error" aria-live="polite"></p>
+      </div>
+      <button type="submit">Send Message</button>
+      <p id="form-success" class="form-success-message"></p>
+    </form>
+  </section>
+  <script>
+    function apex() {
+      alert("Welcome to my portfolio! This page showcases my journey into web development. Feel free to explore the projects and get in touch.");
+    }
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const messageInput = document.getElementById('message');
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+      const messageError = document.getElementById('message-error');
+      const successMessage = document.getElementById('form-success');
+      let isValid = true;
+      nameError.textContent = '';
+      emailError.textContent = '';
+      messageError.textContent = '';
+      nameInput.classList.remove('invalid');
+      emailInput.classList.remove('invalid');
+      messageInput.classList.remove('invalid');
+      successMessage.textContent = '';
+      successMessage.style.opacity = 0;
+      if (nameInput.value.trim() === '') {
+        nameError.textContent = 'Name is required.';
+        nameInput.classList.add('invalid');
+        isValid = false;
+      }
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emailInput.value.trim() === '') {
+        emailError.textContent = 'Email is required.';
+        emailInput.classList.add('invalid');
+        isValid = false;
+      } else if (!emailPattern.test(emailInput.value.trim())) {
+        emailError.textContent = 'Please enter a valid email address.';
+        emailInput.classList.add('invalid');
+        isValid = false;
+      }
+      if (messageInput.value.trim().length < 10) {
+        messageError.textContent = 'Message must be at least 10 characters long.';
+        messageInput.classList.add('invalid');
+        isValid = false;
+      }
+      if (isValid) {
+        successMessage.textContent = 'Thank you for your message! I will get back to you soon.';
+        successMessage.style.opacity = 1;
+        document.getElementById('contact-form').reset();
+        setTimeout(() => {
+          successMessage.style.opacity = 0;
+        }, 5000);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      const mainImage = document.getElementById('mainImage');
+      const thumbnails = document.querySelectorAll('.thumbnail');
+      const contactForm = document.getElementById('contact-form');
+      const connectButton = document.getElementById('connect-button');
+      const todoForm = document.getElementById('todo-form');
+      const todoInput = document.getElementById('todo-input');
+      const todoList = document.getElementById('todo-list');
+      const contactPanel = document.getElementById('contact');
+      const contactOverlay = document.getElementById('contact-overlay');
+      const contactNavLink = document.querySelector('nav a[href="#contact"]');
+      const closeContactBtn = document.getElementById('close-contact-panel');
+      const navLinks = document.querySelectorAll('nav a');
+      contactForm.addEventListener('submit', handleFormSubmit);
+      connectButton.addEventListener('click', apex);
+      thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+          const currentActive = document.querySelector('.thumbnail.active');
+          if (currentActive) currentActive.classList.remove('active');
+          this.classList.add('active');
+          mainImage.src = this.src;
+        });
+      });
+      const sections = document.querySelectorAll('#home, #gallery, #tasks');
+      const observerOptions = { root: null, rootMargin: '0px', threshold: 0.4 };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${id}`) link.classList.add('active');
+            });
+          }
+        });
+      }, observerOptions);
+      sections.forEach(section => observer.observe(section));
+      function openContactPanel() {
+        navLinks.forEach(link => link.classList.remove('active'));
+        contactPanel.classList.add('is-open');
+        contactOverlay.classList.add('is-open');
+      }
+      function closeContactPanel() {
+        contactPanel.classList.remove('is-open');
+        contactOverlay.classList.remove('is-open');
+        contactNavLink.classList.remove('active');
+      }
+      contactNavLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        openContactPanel();
+      });
+      closeContactBtn.addEventListener('click', closeContactPanel);
+      contactOverlay.addEventListener('click', closeContactPanel);
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && contactPanel.classList.contains('is-open')) closeContactPanel();
+      });
+      todoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const taskText = todoInput.value.trim();
+        if (taskText !== '') {
+          addTask(taskText);
+          todoInput.value = '';
+          todoInput.focus();
+        }
+      });
+      todoList.addEventListener('click', function(event) {
+        const item = event.target;
+        if (item.tagName === 'LI') item.classList.toggle('completed');
+        if (item.tagName === 'SPAN' && item.classList.contains('delete-btn')) item.parentElement.remove();
+      });
+      function addTask(taskText) {
+        const li = document.createElement('li');
+        li.textContent = taskText;
+        const deleteBtn = document.createElement('span');
+        deleteBtn.textContent = '✖';
+        deleteBtn.className = 'delete-btn';
+        li.appendChild(deleteBtn);
+        todoList.appendChild(li);
+      }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      const jokeBtn = document.getElementById('fetch-joke-btn');
+      const jokeResult = document.getElementById('joke-result');
+      jokeBtn.addEventListener('click', function() {
+        jokeResult.textContent = 'Loading...';
+        fetch('https://v2.jokeapi.dev/joke/Any?safe-mode')
+          .then(response => response.json())
+          .then(data => {
+            if (data.type === 'single') {
+              jokeResult.innerHTML = `<div>${data.joke}</div>`;
+            } else if (data.type === 'twopart') {
+              jokeResult.innerHTML = `<div>${data.setup}</div><div><strong>${data.delivery}</strong></div>`;
+            } else {
+              jokeResult.textContent = 'No joke found.';
+            }
+          })
+          .catch(() => {
+            jokeResult.textContent = 'Failed to fetch joke.';
+          });
+      });
+    });
+  </script>
+</body>
+</html>
+<style>
+    @media (max-width: 500px) {
+        .page-container {
+            padding: 4px 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        header {
+            box-shadow: none;
+            border-radius: 0;
+        }
+        nav ul {
+            flex-direction: column;
+            gap: 4px;
+            height: auto;
+            padding: 4px 0;
+        }
+        h1 {
+            font-size: 1.3rem;
+        }
+        h2 {
+            font-size: 1rem;
+        }
+        .gallery, .todo-section, .api-section {
+            padding: 4px;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .main-image-display, img {
+            max-width: 100%;
+            width: 100%;
+            border-radius: 4px;
+            margin: 4px 0;
+        }
+        .thumbnail-container {
+            gap: 2px;
+        }
+        .thumbnail {
+            width: 28px;
+            height: 18px;
+            border-radius: 2px;
+        }
+        #contact {
+            width: 100%;
+            max-width: none;
+            padding: 4px;
+            padding-top: 44px;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        form {
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        button {
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            border-radius: 4px;
+        }
+        .footer-actions {
+            margin-top: 4px;
+            padding: 6px 0;
+            border-radius: 0;
+        }
+    }
+</style>
+<!-- Nature Awareness Quiz Section -->
+<section id="nature-quiz" class="api-section" style="margin-top:24px;">
+    <h2>Nature Awareness Quiz</h2>
+    <div id="quiz-container">
+        <div id="quiz-question"></div>
+        <div id="quiz-options"></div>
+        <button id="next-question-btn" style="display:none;margin-top:10px;">Next</button>
+        <div id="quiz-score" style="margin-top:12px;"></div>
+        <button id="restart-quiz-btn" style="display:none;margin-top:10px;">Restart Quiz</button>
+    </div>
+</section>
+<script>
+const quizQuestions = [
+    {
+        question: "Which of the following is a renewable resource?",
+        options: ["Coal", "Petroleum", "Solar Energy", "Natural Gas"],
+        answer: 2
+    },
+    {
+        question: "What is the main cause of deforestation?",
+        options: ["Urbanization", "Planting trees", "Wildlife protection", "Recycling"],
+        answer: 0
+    },
+    {
+        question: "Which practice helps conserve water?",
+        options: ["Leaving taps open", "Fixing leaks", "Washing cars daily", "Watering lawns at noon"],
+        answer: 1
+    },
+    {
+        question: "Which animal is endangered due to habitat loss?",
+        options: ["House Cat", "Tiger", "Cow", "Pigeon"],
+        answer: 1
+    },
+    {
+        question: "What is the best way to reduce plastic pollution?",
+        options: ["Burning plastic", "Using single-use plastics", "Recycling and reusing", "Throwing in rivers"],
+        answer: 2
+    },
+    {
+        question: "Which gas is responsible for global warming?",
+        options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Helium"],
+        answer: 1
+    },
+    {
+        question: "Planting trees helps to:",
+        options: ["Increase soil erosion", "Reduce air pollution", "Decrease rainfall", "Increase desertification"],
+        answer: 1
+    },
+    {
+        question: "Which is a protected area for wildlife?",
+        options: ["Shopping mall", "Wildlife sanctuary", "Parking lot", "Factory"],
+        answer: 1
+    },
+    {
+        question: "Which of these is a use of forests?",
+        options: ["Source of oxygen", "Habitat for animals", "Wood for furniture", "All of the above"],
+        answer: 3
+    },
+    {
+        question: "What is the main benefit of composting?",
+        options: ["Creates more waste", "Improves soil fertility", "Pollutes water", "Destroys plants"],
+        answer: 1
+    },
+    {
+        question: "Which activity harms coral reefs?",
+        options: ["Eco-tourism", "Overfishing", "Marine protection", "Reef restoration"],
+        answer: 1
+    },
+    {
+        question: "Which is NOT a way to protect nature?",
+        options: ["Littering", "Recycling", "Planting trees", "Saving water"],
+        answer: 0
+    },
+    {
+        question: "Which is a non-renewable resource?",
+        options: ["Wind", "Sunlight", "Coal", "Rainwater"],
+        answer: 2
+    },
+    {
+        question: "Why are wetlands important?",
+        options: ["They filter water", "They provide wildlife habitat", "They prevent floods", "All of the above"],
+        answer: 3
+    },
+    {
+        question: "Which is a use of medicinal plants?",
+        options: ["Making medicines", "Decorating homes", "Producing plastic", "Building roads"],
+        answer: 0
+    },
+    {
+        question: "Which human activity causes air pollution?",
+        options: ["Walking", "Cycling", "Burning fossil fuels", "Swimming"],
+        answer: 2
+    },
+    {
+        question: "Which is a benefit of protecting endangered species?",
+        options: ["Loss of biodiversity", "Balanced ecosystem", "Increase in pollution", "Deforestation"],
+        answer: 1
+    },
+    {
+        question: "Which is a sustainable practice?",
+        options: ["Overfishing", "Crop rotation", "Deforestation", "Waste dumping"],
+        answer: 1
+    },
+    {
+        question: "What is the main use of national parks?",
+        options: ["Wildlife protection", "Urban development", "Mining", "Industrialization"],
+        answer: 0
+    },
+    {
+        question: "Which is a way to reduce energy consumption?",
+        options: ["Leaving lights on", "Using energy-efficient bulbs", "Running AC all day", "Ignoring leaks"],
+        answer: 1
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function showQuestion() {
+    const q = quizQuestions[currentQuestion];
+    document.getElementById('quiz-question').textContent = `Q${currentQuestion + 1}: ${q.question}`;
+    const optionsDiv = document.getElementById('quiz-options');
+    optionsDiv.innerHTML = '';
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.style.display = 'block';
+        btn.style.margin = '6px 0';
+        btn.onclick = () => selectOption(idx);
+        btn.className = 'quiz-option-btn';
+        optionsDiv.appendChild(btn);
+    });
+    document.getElementById('next-question-btn').style.display = 'none';
+    document.getElementById('quiz-score').textContent = '';
+}
+
+function selectOption(selectedIdx) {
+    const q = quizQuestions[currentQuestion];
+    const optionButtons = document.querySelectorAll('.quiz-option-btn');
+    optionButtons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === q.answer) btn.style.background = '#c8e6c9';
+        if (idx === selectedIdx && idx !== q.answer) btn.style.background = '#ffcdd2';
+    });
+    if (selectedIdx === q.answer) {
+        score++;
+        document.getElementById('quiz-score').textContent = 'Correct!';
+    } else {
+        document.getElementById('quiz-score').textContent = `Incorrect! Correct answer: ${q.options[q.answer]}`;
+    }
+    document.getElementById('next-question-btn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion < quizQuestions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('quiz-question').textContent = 'Quiz Completed!';
+    document.getElementById('quiz-options').innerHTML = '';
+    document.getElementById('quiz-score').innerHTML = `Your Score: <strong>${score} / ${quizQuestions.length}</strong>`;
+    document.getElementById('next-question-btn').style.display = 'none';
+    document.getElementById('restart-quiz-btn').style.display = 'inline-block';
+}
+
+function restartQuiz() {
+    currentQuestion = 0;
+    score = 0;
+    document.getElementById('restart-quiz-btn').style.display = 'none';
+    showQuestion();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    showQuestion();
+    document.getElementById('next-question-btn').onclick = nextQuestion;
+    document.getElementById('restart-quiz-btn').onclick = restartQuiz;
+});
+</script>
